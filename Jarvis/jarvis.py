@@ -1,16 +1,19 @@
-import pyttsx3
 import datetime
-import speech_recognition as sr
-import wikipedia
-import webbrowser as wb
 import os
 import random
+from typing import Optional
+
 import pyautogui
 import pyjokes
+import pyttsx3
+import speech_recognition as sr
+import wikipedia
+from openai import OpenAI
+import webbrowser as wb
 
 engine = pyttsx3.init()
 voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[1].id)  
+engine.setProperty('voice', voices[1].id)
 engine.setProperty('rate', 150)
 engine.setProperty('volume', 1)
 
@@ -18,6 +21,12 @@ engine.setProperty('volume', 1)
 def speak(audio) -> None:
     engine.say(audio)
     engine.runAndWait()
+
+
+def speak_in_chunks(text: str, chunk_size: int = 150) -> None:
+    """Speak a long response in manageable chunks."""
+    for start in range(0, len(text), chunk_size):
+        speak(text[start:start + chunk_size])
 
 
 def time() -> None:
@@ -67,7 +76,7 @@ def screenshot() -> None:
     speak(f"Screenshot saved as {img_path}.")
     print(f"Screenshot saved as {img_path}.")
 
-def takecommand() -> str:
+def takecommand() -> Optional[str]:
     """Takes microphone input from the user and returns it as text."""
     r = sr.Recognizer()
     with sr.Microphone() as source:
@@ -146,6 +155,41 @@ def search_wikipedia(query):
         speak("I couldn't find anything on Wikipedia.")
 
 
+def get_openai_client() -> Optional[OpenAI]:
+    """Create an OpenAI client from the OPENAI_API_KEY environment variable."""
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        speak("Please set the OPENAI_API_KEY environment variable to use OpenAI features.")
+        print("Missing OPENAI_API_KEY environment variable.")
+        return None
+    return OpenAI(api_key=api_key)
+
+
+def ask_openai(prompt: str) -> None:
+    """Send a prompt to OpenAI and speak back the response."""
+    client = get_openai_client()
+    if not client:
+        return
+
+    speak("Reaching out to OpenAI for you.")
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a helpful desktop voice assistant."},
+                {"role": "user", "content": prompt},
+            ],
+            temperature=0.7,
+        )
+
+        message = response.choices[0].message.content.strip()
+        print(f"OpenAI response: {message}")
+        speak_in_chunks(message)
+    except Exception as error:
+        speak("I couldn't get a response from OpenAI right now.")
+        print(f"OpenAI error: {error}")
+
+
 if __name__ == "__main__":
     wishme()
 
@@ -176,6 +220,21 @@ if __name__ == "__main__":
 
         elif "change your name" in query:
             set_name()
+
+        elif "ask openai" in query or "ask ai" in query or "ask gpt" in query or "ask chatgpt" in query:
+            prompt = query
+            for keyword in ["ask openai", "ask ai", "ask gpt", "ask chatgpt"]:
+                prompt = prompt.replace(keyword, "")
+            prompt = prompt.strip()
+
+            if not prompt:
+                speak("What would you like me to ask OpenAI?")
+                prompt = takecommand()
+
+            if prompt:
+                ask_openai(prompt)
+            else:
+                speak("Sorry, I couldn't capture your OpenAI request.")
 
         elif "screenshot" in query:
             screenshot()

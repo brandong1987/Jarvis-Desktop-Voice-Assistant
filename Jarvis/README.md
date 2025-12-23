@@ -40,7 +40,11 @@
 - Pyautogui is a library that allows you to control the mouse and keyboard to do various things.
 - In this project we use this library for taking screenshots of the screen.
 
-# 📌Features 
+### 🔸OpenAI
+- Provides large language models (like GPT-4o) to answer arbitrary questions and help with complex tasks.
+- Requires setting the `OPENAI_API_KEY` environment variable before running the assistant when you want to use the "ask OpenAI" commands.
+
+# 📌Features
 
 ### 👉 1. Greet the user
 
@@ -77,6 +81,10 @@
 ### 👉 9. Finally make Assistant offline
 
 <img src="https://github.com/kishanrajput23/Jarvis-Desktop-Voice-Assistant/blob/main/Images/Picture11.png" alt="">
+
+### 👉 10. Ask OpenAI to answer any question or perform creative tasks
+
+- Say "ask OpenAI" (or "ask AI") followed by your question to hear a response directly from OpenAI's models.
 
 # 📌WHY TO USE JARVIS?
 

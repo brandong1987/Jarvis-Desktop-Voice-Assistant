@@ -26,6 +26,7 @@ It can do a lot of cool things, some of them being:
 - Take important note in text file
 - Can take screenshot and save it with custom filename
 - Can tell jokes
+- Ask OpenAI (ChatGPT) questions directly from your desktop
 
 ## Requirements
 
@@ -63,17 +64,31 @@ Python 3.6+
 
    - Install all the requirements given in **[requirements.txt](https://github.com/kishanrajput23/Jarvis-Desktop-Voice-Assistant/blob/main/requirements.txt)** by running the command `pip install -r requirements.txt`
 
-5. **Install PyAudio**  
+5. **Configure OpenAI (optional but recommended)**
+
+   - Export your [OpenAI API key](https://platform.openai.com/) so the "ask OpenAI" command can run:
+
+     ```bash
+     export OPENAI_API_KEY=your_api_key_here
+     ```
+
+   - On Windows PowerShell, use:
+
+     ```powershell
+     setx OPENAI_API_KEY "your_api_key_here"
+     ```
+
+6. **Install PyAudio**
    - Follow the instructions given **[here](https://stackoverflow.com/questions/52283840/i-cant-install-pyaudio-on-windows-how-to-solve-error-microsoft-visual-c-14)**
 
-6. **Run the Assistant**
+7. **Run the Assistant**
   - Run the main script:
     ```bash
     python jarvis.py
     ```
   - Now Enjoy with your own assistant !!!!
 
-7. **Deactivate the Virtual Environment**
+8. **Deactivate the Virtual Environment**
    - After you're done, deactivate the virtual environment:
      ```bash
      deactivate
